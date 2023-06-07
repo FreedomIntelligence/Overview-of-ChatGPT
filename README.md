@@ -264,32 +264,55 @@ Phoenix模型在多种语言中的击败率(Beat Rate)显示，Phoenix在大多�
   <img src="figure/image13.png" alt="图片" />
 </p>
 
+### 2.3.3 HuatuoGPT
+HuatuoGPT是一种大型语言模型，专门用于医疗咨询[16]。它的核心理念是在监督微调阶段同时利用ChatGPT的蒸馏数据和医生的实际数据。开发团队来自香港中文大学（深圳）和深圳大数据研究院。
+#### 2.3.3.1 模型概述
+HuatuoGPT的核心理念是在监督微调阶段同时利用ChatGPT的蒸馏数据和医生的实际数据。ChatGPT的回应通常详细、清晰、信息丰富，但在许多方面无法像医生那样进行综合诊断。因此，HuatuoGPT认为医生的实际数据可以补充蒸馏数据，使蒸馏的语言模型表现得更像医生。为了更好地利用这两种数据的优点，HuatuoGPT采用了一种名为RLAIF（强化学习自AI反馈）的方法，通过训练奖励模型来使语言模型与两种数据的优点保持一致。
+#### 2.3.3.2 训练方法
+- 华佗模型（HuatuoGPT）的训练方法主要包括以下几个步骤：
+
+- 监督微调阶段：在这个阶段，华佗模型同时利用了ChatGPT的蒸馏数据和医生的实际数据。ChatGPT的回应通常详细、清晰、信息丰富，但在许多方面无法像医生那样进行综合诊断。因此，华佗模型认为医生的实际数据可以补充蒸馏数据，使蒸馏的语言模型表现得更像医生。
+
+- 强化学习自AI反馈（RLAIF）：为了更好地利用这两种数据的优点，华佗模型采用了一种名为RLAIF的方法，通过训练奖励模型来使语言模型与两种数据的优点保持一致。具体来说，华佗模型使用大型语言模型来对生成的回应进行评分，基于其正确性、丰富性、逻辑一致性和诊断能力，以使模型与ChatGPT和医生的优点保持一致。
+
+- 评估：华佗模型提出了一种全面的评估方案，包括自动和手动指标。实验结果表明，华佗模型在GPT-4评估、人工评估和医疗基准数据集中的医疗咨询表现中取得了最好的结果。
+
+- 消融研究：华佗模型进行了消融研究，探索了两种类型的数据（真实数据和蒸馏数据）对模型的影响。他们训练了两个不同的模型，分别只使用真实世界数据或蒸馏数据。结果显示，使用真实数据的华佗模型倾向于向患者提问，表现得像医生，但回应较简短，内容组织不够良好。而使用蒸馏数据的华佗模型生成的内容组织良好，详细且信息丰富，但其回应更侧重于提供建议，而不是进行诊断决策。因此，使用蒸馏数据的华佗模型更像一个"非医生朋友"，而不是医生。
+具体训练过程如图所示：
+<p align="center">
+  <img src="figure/huatuo.png" alt="图片" />
+</p>
+
+#### 2.3.3.3 模型性能
+华佗模型在GPT-4评估、人工评估和医疗基准数据集中的医疗咨询表现中取得了较好的结果。在进行医疗咨询的过程中，华佗模型比DoctorGLM、BenTsao和GPT-3.5-turbo得分更高。在多轮对话评估中，华佗模型的总体性能超过了GPT-3.5-turbo的60%以上的情况。在华佗模型的手动评估中，考虑了以下三个方面：诊断准确性、治疗建议的准确性、药物知识和处方的准确性。这些评估指南使医生能够对不同模型的优点和缺点进行细致的比较。华佗模型在单轮医疗咨询的手动评估中，表现出色，对比BenTsao、DoctorGLM，甚至略微超过ChatGPT，突显出其强大的诊断准确性、治疗建议和药物知识。在多轮对话评估中，华佗模型在扩展对话上下文中表现出色，对比DoctorGLM和ChatGPT的胜率分别为86%和58%，这表明华佗模型在病人咨询场景中具有更突出的交互式诊断能力。
+
+
 ### 2.3.3 其他开源的语言模型
-GLM-130B:这是一个双语（英语和中文）预训练语言模型，具有1300亿参数[16]。它的目标是开源一个至少与GPT-3一样好的100B级别模型。GLM-130B在一系列英语基准测试中表现优于GPT-3 175B，并在相关基准测试中一致且显著地优于最大的中文语言模型ERNIE TITAN 3.0 260B。
+GLM-130B:这是一个双语（英语和中文）预训练语言模型，具有1300亿参数[17]。它的目标是开源一个至少与GPT-3一样好的100B级别模型。GLM-130B在一系列英语基准测试中表现优于GPT-3 175B，并在相关基准测试中一致且显著地优于最大的中文语言模型ERNIE TITAN 3.0 260B。
 
-Guanaco: 这是一个基于Meta的LLaMA 7B模型构建的高级指令跟随语言模型[17]。它扩展了Alpaca模型的初始52K数据集，增加了534,530个条目，覆盖了英语、简体中文、繁体中文（台湾）、繁体中文（香港）、日语、德语，以及各种语言和语法任务。这丰富的数据使Guanaco在多语言环境中表现出色。此外，Guanaco还扩展了其能力，现在支持视觉问题回答（VQA）。这个新功能允许模型解释和回应涉及文本和视觉输入的查询，为用户提供更丰富、更互动、更全面的体验。
+Guanaco: 这是一个基于Meta的LLaMA 7B模型构建的高级指令跟随语言模型[18]。它扩展了Alpaca模型的初始52K数据集，增加了534,530个条目，覆盖了英语、简体中文、繁体中文（台湾）、繁体中文（香港）、日语、德语，以及各种语言和语法任务。这丰富的数据使Guanaco在多语言环境中表现出色。此外，Guanaco还扩展了其能力，现在支持视觉问题回答（VQA）。这个新功能允许模型解释和回应涉及文本和视觉输入的查询，为用户提供更丰富、更互动、更全面的体验。
 
-Dolly：这是一个大型语言模型，它的目标是将大型语言模型民主化，使每个公司都能拥有和定制自己的模型，以改进他们的产品[18]。Dolly模型的训练只需要30分钟，使用高质量的训练数据，而且不需要最新或最大的模型：Dolly模型只有60亿个参数，相比之下，GPT-3有1750亿个参数。Dolly模型的代码已经开源，可以在Databricks上重建。
+Dolly：这是一个大型语言模型，它的目标是将大型语言模型民主化，使每个公司都能拥有和定制自己的模型，以改进他们的产品[19]。Dolly模型的训练只需要30分钟，使用高质量的训练数据，而且不需要最新或最大的模型：Dolly模型只有60亿个参数，相比之下，GPT-3有1750亿个参数。Dolly模型的代码已经开源，可以在Databricks上重建。
 
-ChatDoctor: 这是一个医疗领域的聊天模型，它基于LLaMA模型进行了微调，并使用了医疗领域的知识[19]。这个模型使用了100k真实的患者-医生对话进行微调，并添加了自主知识检索能力，例如使用维基百科或数据库作为知识库。微调后的模型在理解患者需求和提供知情建议方面表现出显著的改进。ChatDoctor模型基于Wikipedia和Database Brain，可以获取实时和权威的信息，并根据这些信息回答患者的问题，从而显著提高模型回应的准确性。
+ChatDoctor: 这是一个医疗领域的聊天模型，它基于LLaMA模型进行了微调，并使用了医疗领域的知识[20]。这个模型使用了100k真实的患者-医生对话进行微调，并添加了自主知识检索能力，例如使用维基百科或数据库作为知识库。微调后的模型在理解患者需求和提供知情建议方面表现出显著的改进。ChatDoctor模型基于Wikipedia和Database Brain，可以获取实时和权威的信息，并根据这些信息回答患者的问题，从而显著提高模型回应的准确性。
 
-骆驼(Luotuo): 该项目是由冷子昂 @ 商汤科技, 陈启源 @ 华中师范大学 以及 李鲁鲁 @ 商汤科技发起的中文大语言模型开源项目，包含了一系列语言模型[20]。这个项目的初始目标，是研究使用跨语言数据在进行微调时，大语言模型发生的相关现象。
+骆驼(Luotuo): 该项目是由冷子昂 @ 商汤科技, 陈启源 @ 华中师范大学 以及 李鲁鲁 @ 商汤科技发起的中文大语言模型开源项目，包含了一系列语言模型[21]。这个项目的初始目标，是研究使用跨语言数据在进行微调时，大语言模型发生的相关现象。
 
-BELLE: 这是一个开源的中文对话大模型，其目标是促进中文对话大模型开源社区的发展，降低大语言模型、特别是中文大语言模型的研究和应用门槛[21]。BELLE更关注如何在开源预训练大语言模型的基础上，帮助每一个人都能够得到一个属于自己的、效果尽可能好的具有指令表现能力的语言模型。BELLE项目会持续开放指令训练数据、相关模型、训练代码、应用场景等，也会持续评估不同训练数据、训练算法等对模型表现的影响。
+BELLE: 这是一个开源的中文对话大模型，其目标是促进中文对话大模型开源社区的发展，降低大语言模型、特别是中文大语言模型的研究和应用门槛[22]。BELLE更关注如何在开源预训练大语言模型的基础上，帮助每一个人都能够得到一个属于自己的、效果尽可能好的具有指令表现能力的语言模型。BELLE项目会持续开放指令训练数据、相关模型、训练代码、应用场景等，也会持续评估不同训练数据、训练算法等对模型表现的影响。
 
-Linly: 项目包含了几个重要的模型，包括Chinese-LLaMA基础模型，ChatFlow中文对话模型，以及中文OpenLLaMA模型[22]。这些模型都是基于大规模语料库进行预训练的，具有强大的自然语言处理能力。特别是ChatFlow模型，它是专门用于处理中文对话的，能够在多轮对话、逻辑推理、知识问答等场景中表现出优秀的性能。
+Linly: 项目包含了几个重要的模型，包括Chinese-LLaMA基础模型，ChatFlow中文对话模型，以及中文OpenLLaMA模型[23]。这些模型都是基于大规模语料库进行预训练的，具有强大的自然语言处理能力。特别是ChatFlow模型，它是专门用于处理中文对话的，能够在多轮对话、逻辑推理、知识问答等场景中表现出优秀的性能。
 
-Baize: 这是一个开源聊天模型，它通过在自我对话数据上进行参数高效调优来提升性能[23]。Baize模型的创建过程包括利用ChatGPT与自身进行对话，以自动生成高质量的多轮对话语料库，然后利用这个语料库来提升开源的大型语言模型LLaMA。Baize模型在多轮对话中展示出良好的性能，并设有防护措施以最小化潜在风险。Baize模型可以在单个GPU上运行，使其对更广泛的研究者可用。
+Baize: 这是一个开源聊天模型，它通过在自我对话数据上进行参数高效调优来提升性能[24]。Baize模型的创建过程包括利用ChatGPT与自身进行对话，以自动生成高质量的多轮对话语料库，然后利用这个语料库来提升开源的大型语言模型LLaMA。Baize模型在多轮对话中展示出良好的性能，并设有防护措施以最小化潜在风险。Baize模型可以在单个GPU上运行，使其对更广泛的研究者可用。
 
-Koala: 这是一个由伯克利人工智能研究实验室的多个团队共同开发的对话模型[24]。它通过对网上收集的对话数据进行微调训练，包括与大型语言模型（例如ChatGPT）的对话，这些对话是用户在线分享的。Koala模型的目标是通过学习高质量的数据集来弥补小型模型的不足，可能甚至在未来匹配大型封闭源模型的能力。
+Koala: 这是一个由伯克利人工智能研究实验室的多个团队共同开发的对话模型[25]。它通过对网上收集的对话数据进行微调训练，包括与大型语言模型（例如ChatGPT）的对话，这些对话是用户在线分享的。Koala模型的目标是通过学习高质量的数据集来弥补小型模型的不足，可能甚至在未来匹配大型封闭源模型的能力。
 
-Firefly（流萤): 这是一个开源的中文对话式大语言模型[25]。该模型使用指令微调（Instruction Tuning）在中文数据集上进行调优。使用了词表裁剪、ZeRO等技术，有效降低显存消耗和提高训练效率。在训练中，开发者使用了更小的模型参数量，以及更少的计算资源。为了提升模型在中华文化相关内容的表现，开发者构造了许多与中华文化相关的数据，如对联、作诗、文言文翻译、散文、金庸小说等。
+Firefly（流萤): 这是一个开源的中文对话式大语言模型[26]。该模型使用指令微调（Instruction Tuning）在中文数据集上进行调优。使用了词表裁剪、ZeRO等技术，有效降低显存消耗和提高训练效率。在训练中，开发者使用了更小的模型参数量，以及更少的计算资源。为了提升模型在中华文化相关内容的表现，开发者构造了许多与中华文化相关的数据，如对联、作诗、文言文翻译、散文、金庸小说等。
 
-MedAlpaca：这是一个开源的医学对话AI模型和训练数据集合[26]。这个项目的主要目标是利用大型语言模型（LLM）的能力，通过自然语言指令执行任务，从而避免用户需要具备编程能力。这种特性使医学专业人士能够无缝地与模型进行交互，并通过多样化的医学工作流程引导模型。  MedAlpaca的潜在应用包括帮助医学专业人士进行笔记记录，撰写出院信，从大量文档中检索信息，总结内容，以及将自由形式的文本转换为结构化格式。只要模型在足够数量的医学文档上进行了训练，它就可能具备从基础文本中提取准确信息以协助咨询的医学知识。此外，医学生的培训也可以从这些模型中受益，其中它们扮演了一个学习伙伴的角色，能够向学生提问或阐述复杂的主题。
+MedAlpaca：这是一个开源的医学对话AI模型和训练数据集合[27]。这个项目的主要目标是利用大型语言模型（LLM）的能力，通过自然语言指令执行任务，从而避免用户需要具备编程能力。这种特性使医学专业人士能够无缝地与模型进行交互，并通过多样化的医学工作流程引导模型。  MedAlpaca的潜在应用包括帮助医学专业人士进行笔记记录，撰写出院信，从大量文档中检索信息，总结内容，以及将自由形式的文本转换为结构化格式。只要模型在足够数量的医学文档上进行了训练，它就可能具备从基础文本中提取准确信息以协助咨询的医学知识。此外，医学生的培训也可以从这些模型中受益，其中它们扮演了一个学习伙伴的角色，能够向学生提问或阐述复杂的主题。
 
-BELLE，全称为"Be Everyone's Large Language model Engine"，是一个开源的大型语言模型引擎[27]。这个项目的目标是为开源聊天模型的综合评估填补空白，以便为这一领域的持续进步提供有力支持。在这个项目中，研究者选用了LLaMA作为基础模型，对全参数微调和基于LoRA的调优方法进行了实验性的比较。实验结果揭示，选择合适的基础模型、训练数据集的规模、可学习参数的数量以及模型训练成本均为重要因素。在实验过程中，研究者发现模型在数学任务上表现不佳，得分大多低于0.5。为了验证 LoRA 在特定任务上的适应能力，研究者使用增量0.25M数学数据集（math_0.25M）来调整指令遵循的大型语言模型。从实验结果可以看出，增量微调仍然表现更好，但需要更长的训练时间。LoRA和增量微调都提高了模型的整体性能。
+BELLE，全称为"Be Everyone's Large Language model Engine"，是一个开源的大型语言模型引擎[28]。这个项目的目标是为开源聊天模型的综合评估填补空白，以便为这一领域的持续进步提供有力支持。在这个项目中，研究者选用了LLaMA作为基础模型，对全参数微调和基于LoRA的调优方法进行了实验性的比较。实验结果揭示，选择合适的基础模型、训练数据集的规模、可学习参数的数量以及模型训练成本均为重要因素。在实验过程中，研究者发现模型在数学任务上表现不佳，得分大多低于0.5。为了验证 LoRA 在特定任务上的适应能力，研究者使用增量0.25M数学数据集（math_0.25M）来调整指令遵循的大型语言模型。从实验结果可以看出，增量微调仍然表现更好，但需要更长的训练时间。LoRA和增量微调都提高了模型的整体性能。
 
-MOSS，全称为Multi-Modal Open Source System，是一种开源的工具增强型对话语言模型[28]。它由复旦大学的OpenLMLab团队开发，主要用于实现人工智能助手的功能。MOSS的设计目标是提供一种可以理解和生成跨模态内容的模型，包括文本、语音、图像等。MOSS的工作原理基于自然语言处理技术，它可以理解用户的输入，然后生成相应的输出。这个过程中，MOSS可能会调用一些内置的工具或插件，例如网络搜索、计算器等，以帮助它完成任务。这种设计使得MOSS不仅可以处理一般的对话任务，还可以处理一些更复杂的任务，例如回答关于特定主题的问题或执行特定的操作。MOSS的另一个重要特性是它的个性化能力。OpenLMLab团队希望MOSS能够成为每个用户的专属助手，它可以在与用户的交互中持续学习，伴随用户的成长而成长。
+MOSS，全称为Multi-Modal Open Source System，是一种开源的工具增强型对话语言模型[29]。它由复旦大学的OpenLMLab团队开发，主要用于实现人工智能助手的功能。MOSS的设计目标是提供一种可以理解和生成跨模态内容的模型，包括文本、语音、图像等。MOSS的工作原理基于自然语言处理技术，它可以理解用户的输入，然后生成相应的输出。这个过程中，MOSS可能会调用一些内置的工具或插件，例如网络搜索、计算器等，以帮助它完成任务。这种设计使得MOSS不仅可以处理一般的对话任务，还可以处理一些更复杂的任务，例如回答关于特定主题的问题或执行特定的操作。MOSS的另一个重要特性是它的个性化能力。OpenLMLab团队希望MOSS能够成为每个用户的专属助手，它可以在与用户的交互中持续学习，伴随用户的成长而成长。
 
 模型|发布时间|模型大小|所基于的模型|支持语言|模型模态
 --|--|--|--|--|--
@@ -309,21 +332,21 @@ BELLE|2023.4.19|7B/13B|LLaMA|中文/英文|文本
 MOSS|2023.4.21|16B|CodeGen|中文|文本/语音/图像
 
 ## 2.4 ChatGPT的相关下游应用文
-需求信息检索： ChatGPT已被用于需求工程，从涉及多种语言的不同类型的工件中检索需求信息[29]。
+需求信息检索： ChatGPT已被用于需求工程，从涉及多种语言的不同类型的工件中检索需求信息[30]。
 
-对话理解： ChatGPT已经被评估为口语理解（SLU）和对话状态跟踪（DST）等任务。它在多轮DST任务中的表现比单轮SLU任务更好[30]。
+对话理解： ChatGPT已经被评估为口语理解（SLU）和对话状态跟踪（DST）等任务。它在多轮DST任务中的表现比单轮SLU任务更好[31]。
 
-作文写作： ChatGPT已被用于生成论证性文章。在一项研究中，ChatGPT生成的文章在质量上比人类写的文章评价更高[31]。
+作文写作： ChatGPT已被用于生成论证性文章。在一项研究中，ChatGPT生成的文章在质量上比人类写的文章评价更高[32]。
 
-文本数据增强： ChatGPT已经被用来将训练样本中的每一句话改写成多个概念相似但语义不同的样本。增强后的样本可用于下游的模型训练[32]。
+文本数据增强： ChatGPT已经被用来将训练样本中的每一句话改写成多个概念相似但语义不同的样本。增强后的样本可用于下游的模型训练[33]。
 
-抽象化的总结： ChatGPT分析文本中的情感的能力已经得到了评估。它在情感分类任务中表现出令人印象深刻的零点性能[33]。
+抽象化的总结： ChatGPT分析文本中的情感的能力已经得到了评估。它在情感分类任务中表现出令人印象深刻的零点性能[34]。
 
-机器翻译： ChatGPT已被评估为机器翻译，并与商业翻译产品进行了比较[34]。
+机器翻译： ChatGPT已被评估为机器翻译，并与商业翻译产品进行了比较[35]。
 
-语法错误纠正： ChatGPT在语法错误纠正（GEC）任务中的表现已经得到了评估[35]。
+语法错误纠正： ChatGPT在语法错误纠正（GEC）任务中的表现已经得到了评估[36]。
 
-编程协助： ChatGPT已被评估为代码生成、程序修复和代码总结任务的编程助手[36]。
+编程协助： ChatGPT已被评估为代码生成、程序修复和代码总结任务的编程助手[37]。
 
 # 3 未来研究方向
 ChatGPT是一种大型语言模型，用于生成与人类对话。它已经被广泛地用于各种应用，包括客户服务、创作援助、教育等。然而，尽管当前的ChatGPT已经相当强大，但仍有许多前景广阔的研究方向值得我们探索，以进一步提升其性能。以下是未来的一些研究方向
@@ -369,48 +392,50 @@ GPT和机器人结合：将GPT与实体机器人（如服务机器人或家庭�
 > 
 > [15] Chen, Z., Jiang, F., Chen, J., Wang, T., Yu, F., Chen, G., ... & Li, H. (2023). Phoenix: Democratizing chatgpt across languages. arXiv preprint arXiv:2304.10453.
 > 
-> [16] Zeng, A., Liu, X., Du, Z., Wang, Z., Lai, H., Ding, M., ... & Tang, J. (2022). Glm-130b: An open bilingual pre-trained model. arXiv preprint arXiv:2210.02414.
+> [16] Zhang, H., Chen, J., Jiang, F., Yu, F., Chen, Z., Li, J., Chen, G., Wu, X., Zhang, Z., Xiao, Q., Wan, X., Wang, B., & Li, H. (2023). HuatuoGPT: A Large Language Model for Medical Consultation. arXiv. https://arxiv.org/pdf/2305.15075.pdf
 > 
-> [17] Guanaco - Generative Universal Assistant for Natural-language Adaptive Context-aware Omnilingual outputs. (2023). Retrieved from https://guanaco-model.github.io
+> [17] Zeng, A., Liu, X., Du, Z., Wang, Z., Lai, H., Ding, M., ... & Tang, J. (2022). Glm-130b: An open bilingual pre-trained model. arXiv preprint arXiv:2210.02414.
 > 
-> [18] Conover, M., Hayes, M., Mathur, A., Meng, X., Xie, J., Wan, J., Ghodsi, A., Wendell, P., & Zaharia, M. (2023). Hello Dolly: Democratizing the magic of ChatGPT with open models. Databricks Blog. Retrieved from https://www.databricks.com/blog/2023/03/24/hello-dolly-democratizing-magic-chatgpt-open-models.html
+> [18] Guanaco - Generative Universal Assistant for Natural-language Adaptive Context-aware Omnilingual outputs. (2023). Retrieved from https://guanaco-model.github.io
 > 
-> [19] Li, Yunxiang, Li, Zihan, Zhang, Kai, Dan, Ruilong, & Zhang, You. (2023). ChatDoctor: A Medical Chat Model Fine-tuned on LLaMA Model using Medical Domain Knowledge. arXiv preprint arXiv:2303.14070v4.
+> [19] Conover, M., Hayes, M., Mathur, A., Meng, X., Xie, J., Wan, J., Ghodsi, A., Wendell, P., & Zaharia, M. (2023). Hello Dolly: Democratizing the magic of ChatGPT with open models. Databricks Blog. Retrieved from https://www.databricks.com/blog/2023/03/24/hello-dolly-democratizing-magic-chatgpt-open-models.html
 > 
-> [20] Chen, Q., Li, L., & Leng, Z. (2023). Camel (Luotuo): Open Sourced Chinese Language Models. Retrieved from https://github.com/LC1332/Luotuo-Chinese-LLM
+> [20] Li, Yunxiang, Li, Zihan, Zhang, Kai, Dan, Ruilong, & Zhang, You. (2023). ChatDoctor: A Medical Chat Model Fine-tuned on LLaMA Model using Medical Domain Knowledge. arXiv preprint arXiv:2303.14070v4.
 > 
-> [21] Ji, Y., Deng, Y., Gong, Y., Peng, Y., Niu, Q., Ma, B., & Li, X. (2023). BELLE: Be Everyone's Large Language model Engine. GitHub. https://github.com/LianjiaTech/BELLE
+> [21] Chen, Q., Li, L., & Leng, Z. (2023). Camel (Luotuo): Open Sourced Chinese Language Models. Retrieved from https://github.com/LC1332/Luotuo-Chinese-LLM
 > 
-> [22] CVI-SZU. (2023). Linly: Chinese-LLaMA基础模型；ChatFlow中文对话模型；中文OpenLLaMA模型；NLP预训练/指令微调数据集. GitHub. https://github.com/CVI-SZU/Linly
+> [22] Ji, Y., Deng, Y., Gong, Y., Peng, Y., Niu, Q., Ma, B., & Li, X. (2023). BELLE: Be Everyone's Large Language model Engine. GitHub. https://github.com/LianjiaTech/BELLE
 > 
-> [23] Xu, C., Guo, D., Duan, N., & McAuley, J. (2023). Baize: An Open-Source Chat Model with Parameter-Efficient Tuning on Self-Chat Data. arXiv preprint arXiv:2304.01196.
+> [23] CVI-SZU. (2023). Linly: Chinese-LLaMA基础模型；ChatFlow中文对话模型；中文OpenLLaMA模型；NLP预训练/指令微调数据集. GitHub. https://github.com/CVI-SZU/Linly
 > 
-> [24] Geng, X., Gudibande, A., Liu, H., & Wallace, E. (2023, April 3). Koala: A Dialogue Model for Academic Research. The Berkeley Artificial Intelligence Research Blog. 
+> [24] Xu, C., Guo, D., Duan, N., & McAuley, J. (2023). Baize: An Open-Source Chat Model with Parameter-Efficient Tuning on Self-Chat Data. arXiv preprint arXiv:2304.01196.
+> 
+> [25] Geng, X., Gudibande, A., Liu, H., & Wallace, E. (2023, April 3). Koala: A Dialogue Model for Academic Research. The Berkeley Artificial Intelligence Research Blog. 
 > https://bair.berkeley.edu/blog/2023/04/03/koala/
 > 
-> [25] Yang, J. (2023). Firefly(流萤): 中文对话式大语言模型. GitHub. https://github.com/yangjianxin1/Firefly
+> [26] Yang, J. (2023). Firefly(流萤): 中文对话式大语言模型. GitHub. https://github.com/yangjianxin1/Firefly
 > 
-> [26] MedAlpaca. (2023). An Open-Source Collection of Medical Conversational AI Models and Training Data. Preprint retrieved from https://arxiv.org/pdf/2304.08247.pdf
+> [27] MedAlpaca. (2023). An Open-Source Collection of Medical Conversational AI Models and Training Data. Preprint retrieved from https://arxiv.org/pdf/2304.08247.pdf
 > 
-> [27] Ji, Y., Deng, Y., Gong, Y., Peng, Y., Niu, Q., Ma, B., & Li, X. (2023). BELLE: Be Everyone's Large Language model Engine. GitHub repository. Retrieved from https://github.com/LianjiaTech/BELLE
+> [28] Ji, Y., Deng, Y., Gong, Y., Peng, Y., Niu, Q., Ma, B., & Li, X. (2023). BELLE: Be Everyone's Large Language model Engine. GitHub repository. Retrieved from https://github.com/LianjiaTech/BELLE
 > 
-> [28] OpenLMLab. (2023). MOSS: An open-source tool-augmented conversational language model from Fudan University. Retrieved from https://github.com/OpenLMLab/MOSS
+> [29] OpenLMLab. (2023). MOSS: An open-source tool-augmented conversational language model from Fudan University. Retrieved from https://github.com/OpenLMLab/MOSS
 > 
-> [29] Zhang, J., Chen, Y., Niu, N., & Liu, C. (2023). A Preliminary Evaluation of ChatGPT in Requirements Information Retrieval. arXiv preprint arXiv:2304.12562.
+> [30] Zhang, J., Chen, Y., Niu, N., & Liu, C. (2023). A Preliminary Evaluation of ChatGPT in Requirements Information Retrieval. arXiv preprint arXiv:2304.12562.
 > 
-> [30] Pan, W., Chen, Q., Xu, X., Che, W., & Qin, L. (2023). A preliminary evaluation of chatgpt for zero-shot dialogue understanding. arXiv preprint arXiv:2304.04256.
+> [31] Pan, W., Chen, Q., Xu, X., Che, W., & Qin, L. (2023). A preliminary evaluation of chatgpt for zero-shot dialogue understanding. arXiv preprint arXiv:2304.04256.
 > 
-> [31] Herbold, S., Hautli-Janisz, A., Heuer, U., Kikteva, Z., & Trautsch, A. (2023). AI, write an essay for me: A large-scale comparison of human-written versus ChatGPT-generated essays. arXiv preprint arXiv:2304.14276.
+> [32] Herbold, S., Hautli-Janisz, A., Heuer, U., Kikteva, Z., & Trautsch, A. (2023). AI, write an essay for me: A large-scale comparison of human-written versus ChatGPT-generated essays. arXiv preprint arXiv:2304.14276.
 > 
-> [32] Dai, H., Liu, Z., Liao, W., Huang, X., Cao, Y., Wu, Z., Zhao, L., ... (2023). AugGPT: Leveraging ChatGPT for Text Data Augmentation. arXiv:2302.13007 [cs.CL]
+> [33] Dai, H., Liu, Z., Liao, W., Huang, X., Cao, Y., Wu, Z., Zhao, L., ... (2023). AugGPT: Leveraging ChatGPT for Text Data Augmentation. arXiv:2302.13007 [cs.CL]
 > 
-> [33] Wang, Z., Xie, Q., Ding, Z., Feng, Y., & Xia, R. (2023). Is ChatGPT a good sentiment analyzer? A preliminary study. arXiv preprint arXiv:2304.04339.
+> [34] Wang, Z., Xie, Q., Ding, Z., Feng, Y., & Xia, R. (2023). Is ChatGPT a good sentiment analyzer? A preliminary study. arXiv preprint arXiv:2304.04339.
 > 
-> [34] Jiao, W., Wang, W. X., Huang, J. T., Wang, X., & Tu, Z. P. (2023). Is ChatGPT a good translator? Yes with GPT-4 as the engine. arXiv preprint arXiv:2301.08745.
+> [35] Jiao, W., Wang, W. X., Huang, J. T., Wang, X., & Tu, Z. P. (2023). Is ChatGPT a good translator? Yes with GPT-4 as the engine. arXiv preprint arXiv:2301.08745.
 > 
-> [35] Fang, T., Yang, S., Lan, K., Wong, D. F., Hu, J., Chao, L. S., & Zhang, Y. (2023). Is chatgpt a highly fluent grammatical error correction system? a comprehensive evaluation. arXiv preprint arXiv:2304.01746.
+> [36] Fang, T., Yang, S., Lan, K., Wong, D. F., Hu, J., Chao, L. S., & Zhang, Y. (2023). Is chatgpt a highly fluent grammatical error correction system? a comprehensive evaluation. arXiv preprint arXiv:2304.01746.
 > 
-> [36] Tian, H., Lu, W., Li, T. O., Tang, X., Cheung, S. C., Klein, J., & Bissyandé, T. F. (2023). Is ChatGPT the Ultimate Programming Assistant--How far is it?. arXiv preprint arXiv:2304.11938.
+> [37] Tian, H., Lu, W., Li, T. O., Tang, X., Cheung, S. C., Klein, J., & Bissyandé, T. F. (2023). Is ChatGPT the Ultimate Programming Assistant--How far is it?. arXiv preprint arXiv:2304.11938.
 
 
 
