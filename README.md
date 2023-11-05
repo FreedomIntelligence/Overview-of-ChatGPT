@@ -310,7 +310,7 @@ HuatuoGPT的核心理念是在监督微调阶段同时利用ChatGPT的蒸馏数�
     <img src="figure/huatuo2.png">
 </figure>
 
-## 3.2 部分模型的详细介绍
+## 3.2 部分开源模型的详细介绍
 ### 3.2.1 GLM[25]
 GLM与GPT系列模型类似，采用了Decoder-Only 结构。与GPT不同的是，为了提升GLM的文本理解能力，GLM预训练时采取了自回归空白填充的方法，并把自然语言理解的分类任务转化为填空生成任务来对模型进行微调。针对不同训练语料，GLM还采用了多任务训练。
 #### 3.2.1.1 预训练——自回归空白填充
@@ -395,14 +395,23 @@ Meta AI团队比较了Humpback和其他指令微调模型（基准模型均为Ll
 <img width="529" alt="98f02baf5c1e1d2687af22ed7da3db5" src="https://github.com/FreedomIntelligence/Overview-of-ChatGPT/assets/84125360/a97e0292-f779-47a4-bb2f-322b8cd8ebeb">  
 其中虚线表示指令微调的过程中使用了对更高级模型的蒸馏来构造数据，实线表示未使用蒸馏方法。
 
-### 3.2.6 Xwin-LM[30]
-
-### 3.2.7 Mistral[31]
-在快速发展的NLP领域中，训练更高性能的模型通常需要模型尺寸的增加。然而，这种升级倾向于增加计算成本和延长推理时间，从而增加了在实际场景中部署的障碍。因此，寻找能够提供高水平性能和效率的平衡模型变得至关重要。Mistral AI团队研发的Mistral模型仅有7B大小，但在所有测试基准中都优于Llama2 13B，并在数学和代码生成方面超过了Llama 34B。
-#### 3.2.7.1 滑动窗口注意力机制（SWA）
+### 3.2.6 Mistral[30]
+在快速发展的NLP领域中，训练更高性能的模型通常需要模型尺寸的增加。然而，这种升级倾向于增加计算成本和延长推理时间，从而增加了在实际场景中部署的障碍。因此，寻找能提供高水平性能和计算效率的平衡模型变得至关重要。Mistral AI团队研发的Mistral模型仅有7B大小，但在所有测试基准中都优于Llama2 13B，并在数学和代码生成方面超过了Llama 34B。在模型结构方面，Mistral模型使用了滑动窗口注意力机制和滚动缓存，这两个方法有利于在保证模型性能的同时减小模型尺寸。
+#### 3.2.6.1 滑动窗口注意力机制（Sliding Window Attention）
 <img width="579" alt="bf00f8e1a75d37e7c361c40d737cc29" src="https://github.com/FreedomIntelligence/Overview-of-ChatGPT/assets/84125360/d526f2ca-1878-4038-b8f0-a85f1d8c7422">  
 
-如上图所示，Vanilla Attention就是传统的注意力机制，其操作次数在序列长度上是二次的，内存随着tokens的数量线性增加。在推理时，由于缓存可用性降低，这会导致更高的延迟和更小的吞吐量。为了缓解这个问题，我们使用滑动窗口注意力机制:每个标记最多可以关注之前的的W个tokens(这里是W=3)。在每个Attention layer，信息可以通过W个tokens向前移动。因此，在k个Attention layer之后，信息最多可以向前移动k × W个tokens。
+如上图所示，Vanilla Attention就是传统的注意力机制，其操作次数在序列长度上是二次的，内存随着tokens的数量线性增加。在推理时，由于缓存可用性降低，这会导致更高的延迟和更小的吞吐量。为了缓解这个问题，Mistral AI团队使用滑动窗口注意力机制:每个token最多可以关注之前的的W个tokens(这里是W=3)。在每个Attention layer，信息可以通过W个tokens向前移动。因此，在k个Attention layer之后，信息最多可以向前移动k × W个tokens。
+#### 3.2.6.2 滚动缓存 （Rolling Buffer Cache）
+<img width="706" alt="a432e7d58f063407873c80b494dcc96" src="https://github.com/FreedomIntelligence/Overview-of-ChatGPT/assets/84125360/a08b1c37-b813-4414-85d8-955fe4beec1a">  
+
+由于上述滑动窗口的窗口长度是固定的，滚动缓存就可以用节省缓存空间。缓存的大小固定为W，时间步长i的值存储在缓存i mod W的位置上。因此，当位置i大于W时，缓存中过去的值将被覆盖，并且缓存的大小停止增加。上图为W=3时候的一个示例。在文本序列长度为32k个tokens的情况下，这个方法能将缓存使用的内存减少8倍，而不会影响模型质量。
+
+### 3.2.7 Xwin-LM[31]
+Xwin-LM是以Llama2为基础进行微调的，该模型旨在开发和开源大语言模型的对齐技术，包括监督微调（SFT）、奖励模型（RM）、拒绝采样、人类反馈强化学习（RLHF）等。  
+- Xwin-LM-70B：在AlpacaEval基准测试中对Davinci-003的胜率达到95.57%，在AlpacaEval中排名第一。也是第一个在AlpacaEval上超越GPT-4的模型。此外，它对上GPT-4的胜率为60.61。
+- Xwin-LM-13B：在AlpacaEval上取得了91.76%的胜率，在所有13B模型中排名第一。
+- Xwin-LM-7B：在AlpacaEval上取得了87.82%的胜率，在所有7B模型中排名第一。  
+<img width="408" alt="48a74e0265179563b748849fc651340" src="https://github.com/FreedomIntelligence/Overview-of-ChatGPT/assets/84125360/66b51907-d7eb-4696-868a-54934274a47a">
 
 
 # 3.3 其他开源语言模型
@@ -431,6 +440,10 @@ BELLE，全称为"Be Everyone's Large Language model Engine"，是一个开源�
 
 MOSS，全称为Multi-Modal Open Source System，是一种开源的工具增强型对话语言模型[43]。它由复旦大学的OpenLMLab团队开发，主要用于实现人工智能助手的功能。MOSS的设计目标是提供一种可以理解和生成跨模态内容的模型，包括文本、语音、图像等。MOSS的工作原理基于自然语言处理技术，它可以理解用户的输入，然后生成相应的输出。这个过程中，MOSS可能会调用一些内置的工具或插件，例如网络搜索、计算器等，以帮助它完成任务。这种设计使得MOSS不仅可以处理一般的对话任务，还可以处理一些更复杂的任务，例如回答关于特定主题的问题或执行特定的操作。MOSS的另一个重要特性是它的个性化能力。OpenLMLab团队希望MOSS能够成为每个用户的专属助手，它可以在与用户的交互中持续学习，伴随用户的成长而成长。
 
+InternLM，是一个由上海AI实验室与商汤科技联合香港中文大学和复旦大学推出的开源轻量级训练框架[44]，旨在支持大模型训练而无需大量的依赖。通过单一的代码库，它支持在拥有数千个GPU的大型集群上进行预训练，并在单个GPU上进行微调，同时实现了卓越的性能优化。在1024个GPU上训练时，InternLM可以实现近90%的加速效率。  
+
+Falcon，是由位于阿联酋阿布扎比的技术创新研究院创建的一系列语言模型[45]。具体训练数据中，Falcon主要是RefinedWe数据集(占比大于70%）。此外，它还在对话、技术论文，以及一小部分代码等经过整理的混合数据的基础上进行了训练。关于模型效果，以Falcon 180B为例，其在推理、编码、熟练度和知识测试各种任务中，一举击败Llama 2，甚至能够与谷歌的PaLM 2不差上下，性能直逼GPT-4。
+
 模型|模型大小|所基于的模型|支持语言|模型模态
 --|--|--|--|--
 Guanaco|7B|LLaMA|英语/简体中文/繁体中文（台湾）/繁体中文（香港）/日语/德语|文本/视觉
@@ -446,8 +459,8 @@ Dolly|12B|pythia-12b|--|文本
 MedAlpaca|7B/13B|LLaMA|英文|文本
 BELLE|7B/13B|LLaMA|中文/英文|文本
 MOSS|16B|CodeGen|中文|文本/语音/图像
-
-
+InternLM|7B/20B|--|中文/英文|文本
+Falcon|7B/40B/180B|--|英语/德语/西班牙语/法语|文本
 
 # 4 未来研究方向
 ChatGPT是一种大型语言模型，用于生成与人类对话。它已经被广泛地用于各种应用，包括客户服务、创作援助、教育等。然而，尽管当前的ChatGPT已经相当强大，但仍有许多前景广阔的研究方向值得我们探索，以进一步提升其性能。以下是未来的一些研究方向
@@ -521,10 +534,10 @@ GPT和机器人结合：将GPT与实体机器人（如服务机器人或家庭�
 >
 > [29]Li, X., Yu, P., Zhou, C., Schick, T., Zettlemoyer, L., Levy, O., ... & Lewis, M. (2023). Self-alignment with instruction backtranslation. arXiv preprint arXiv:2308.06259.
 >
-> [30]Xwin-LM Team. (2023). Xwin-LM: Powerful, Stable, and Reproducible LLM Alignment. Retrieved from https://github.com/Xwin-LM/Xwin-LM
->
-> [31]Jiang, A. Q., Sablayrolles, A., Mensch, A., Bamford, C., Chaplot, D. S., Casas, D. D. L., ... & Sayed, W. E. (2023). Mistral 7B. arXiv preprint arXiv:2310.06825.
+> [30]Jiang, A. Q., Sablayrolles, A., Mensch, A., Bamford, C., Chaplot, D. S., Casas, D. D. L., ... & Sayed, W. E. (2023). Mistral 7B. arXiv preprint arXiv:2310.06825.
 > 
+> [31]Xwin-LM Team. (2023). Xwin-LM: Powerful, Stable, and Reproducible LLM Alignment. Retrieved from https://github.com/Xwin-LM/Xwin-LM
+>
 > [32] Guanaco - Generative Universal Assistant for Natural-language Adaptive Context-aware Omnilingual outputs. (2023). Retrieved from https://guanaco-model.github.io
 > 
 > [33] Conover, M., Hayes, M., Mathur, A., Meng, X., Xie, J., Wan, J., Ghodsi, A., Wendell, P., & Zaharia, M. (2023). Hello Dolly: Democratizing the magic of ChatGPT with open models. Databricks Blog. Retrieved from https://www.databricks.com/blog/2023/03/24/hello-dolly-democratizing-magic-chatgpt-open-models.html
@@ -549,9 +562,10 @@ GPT和机器人结合：将GPT与实体机器人（如服务机器人或家庭�
 > [42] Ji, Y., Deng, Y., Gong, Y., Peng, Y., Niu, Q., Ma, B., & Li, X. (2023). BELLE: Be Everyone's Large Language model Engine. GitHub repository. Retrieved from https://github.com/LianjiaTech/BELLE
 > 
 > [43] OpenLMLab. (2023). MOSS: An open-source tool-augmented conversational language model from Fudan University. Retrieved from https://github.com/OpenLMLab/MOSS
-
-
-
+>
+> [44] InternLM Team. (2023). InternLM: A Multilingual Language Model with Progressively Enhanced Capabilities. Retrived from https://github.com/InternLM/InternLM
+> 
+> [45] Almazrouei, Ebtesam and Alobeidli, Hamza and Alshamsi, Abdulaziz and Cappelli, Alessandro and Cojocaru, Ruxandra and Debbah, Merouane and Goffinet, Etienne and Heslow, Daniel and Launay, Julien and Malartic, Quentin and Noune, Badreddine and Pannier, Baptiste and Penedo, Guilherme. (2023). The Falcon Series of Language Models:Towards Open Frontier Models. Retrieved from https://huggingface.co/tiiuae/falcon-180B
 
 
 
