@@ -1,6 +1,8 @@
 
 
 # Overview-of-ChatGPT
+
+Contributors: Feng Jiang, Zeyu Yang, Yuantao Zhang
 # 1. ChatGPT发布之前
 
 ## 1.1 GPT系列的发展历程
